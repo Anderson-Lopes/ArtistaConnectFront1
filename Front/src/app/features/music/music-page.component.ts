@@ -85,7 +85,19 @@ import { Music, MusicFormValue } from '../../models/music';
           </div>
           <div class="field">
             <label for="music-duration">Duração</label>
-            <input id="music-duration" type="text" placeholder="Ex.: 3:45" formControlName="duracao" />
+            <input
+              id="music-duration"
+              type="text"
+              placeholder="Ex.: 3:45"
+              formControlName="duracao"
+              [attr.aria-invalid]="form.controls.duracao.invalid && form.controls.duracao.touched"
+              [attr.aria-describedby]="form.controls.duracao.invalid && form.controls.duracao.touched ? 'duration-error' : null"
+            />
+            @if (form.controls.duracao.invalid && form.controls.duracao.touched) {
+              <span class="field-hint form-message-error" id="duration-error">
+                Informe a duração no formato minutos:segundos (ex.: 3:45), com segundos de 00 a 59.
+              </span>
+            }
           </div>
           <div class="form-actions">
             <button class="button button-secondary" type="button" (click)="cancelForm()">
@@ -193,7 +205,7 @@ export class MusicPageComponent implements OnInit {
   readonly form = this.formBuilder.nonNullable.group({
     titulo: ['', [Validators.required, Validators.maxLength(255)]],
     artistaResponsavel: [''],
-    duracao: [''],
+    duracao: ['', [Validators.required, Validators.pattern(/^\d{1,3}:[0-5]\d$/)]],
   });
 
   ngOnInit(): void {
